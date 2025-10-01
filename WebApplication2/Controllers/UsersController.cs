@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApplication2.Data;
 using WebApplication2.Models;
@@ -17,7 +18,7 @@ namespace WebApplication2.Controllers
         }
 
         // GET: Users
-        [HttpGet]
+        [HttpGet()]
         public async Task<IActionResult> Index()
         {
             var user = await _context.Users.ToListAsync();
@@ -53,6 +54,7 @@ namespace WebApplication2.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize]
         // トークン発行APiを作る必要あり。それまではコメントアウト
         //[ValidateAntiForgeryToken]
         [Route("Create")]
