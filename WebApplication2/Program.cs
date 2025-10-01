@@ -27,7 +27,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 // Add services to the container.
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-//builder.Services.AddOpenApi();
 builder.Services.AddOpenApi(options =>
 {
     options.AddDocumentTransformer((document, context, cancellationToken) =>
@@ -39,10 +38,10 @@ builder.Services.AddOpenApi(options =>
         {
             Name = "Authorization",
             Type = SecuritySchemeType.Http,
-            Scheme = "bearer",
+            Scheme = "bearer",           // ← ここがポイント
             BearerFormat = "JWT",
             In = ParameterLocation.Header,
-            Description = "JWT 認証トークンを入力してください。例: Bearer {token}"
+            Description = "JWT トークンのみ入力してください（Bearer は不要）"
         };
 
         document.SecurityRequirements.Add(new OpenApiSecurityRequirement
@@ -69,46 +68,12 @@ builder.Services.AddDbContext<WebApplication2.Data.TestEFContext>();
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddEndpointsApiExplorer();
-//builder.Services.AddSwaggerGen(c =>
-//{
-//    c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
-
-//    // JWT 認証スキームを Swagger に追加
-//    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-//    {
-//        Name = "Authorization",
-//        Type = SecuritySchemeType.Http,
-//        Scheme = "bearer",
-//        BearerFormat = "JWT",
-//        In = ParameterLocation.Header,
-//        Description = "JWT 認証トークンを入力してください。例: Bearer {token}"
-//    });
-
-//    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-//    {
-//        {
-//            new OpenApiSecurityScheme
-//            {
-//                Reference = new OpenApiReference
-//                {
-//                    Type = ReferenceType.SecurityScheme,
-//                    Id = "Bearer"
-//                }
-//            },
-//            Array.Empty<string>()
-//        }
-//    });
-//});
-
 var app = builder.Build();
-
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    //app.UseSwagger();
-    //app.UseSwaggerUI(option => option.SwaggerEndpoint("/openapi/v1.json", "v1"));
     app.UseDeveloperExceptionPage();
 }
 
