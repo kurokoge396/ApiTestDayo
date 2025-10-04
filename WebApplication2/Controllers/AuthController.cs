@@ -6,7 +6,7 @@ using System.Text;
 
 namespace WebApplication2.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/")]
     [ApiController]
     public class AuthController : ControllerBase
     {
@@ -24,7 +24,18 @@ namespace WebApplication2.Controllers
             if (request.Username == "test" && request.Password == "password")
             {
                 var token = GenerateJwtToken(request.Username);
-                return Ok(new { token });
+                // HttpOnly Cookie に保存
+                Response.Cookies.Append("AuthToken", token, new CookieOptions
+                {
+                    HttpOnly = true, // JavaScriptからアクセス不可
+                    Secure = true,   // HTTPS通信時のみ送信
+                    SameSite = SameSiteMode.Strict, // CSRF対策（同一サイトのみ送信）
+                    Expires = DateTimeOffset.UtcNow.AddHours(1)
+                });
+                //return Ok(new { token });
+
+                // トークンはJSONで返さない
+                return Ok(new { message = "Login successful" });
             }
             return Unauthorized();
         }

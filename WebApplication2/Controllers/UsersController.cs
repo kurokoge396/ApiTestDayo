@@ -33,7 +33,7 @@ namespace WebApplication2.Controllers
         // GET: Users/Details/5
         [HttpGet]
         [Route("UserDetail")]
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(string? id)
         {
             if (id == null)
             {
@@ -64,9 +64,11 @@ namespace WebApplication2.Controllers
             {
                 _context.Add(user);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return Ok(user);
+                //return RedirectToAction(nameof(Index));
             }
-            return View(user);
+            //return View(user);
+            return Ok(new { message = "successful" });
         }
 
         // POST: Users/Edit/5
@@ -75,7 +77,7 @@ namespace WebApplication2.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Edit")]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,password,Email")] User user)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,Name,password,Email")] User user)
         {
             if (id != user.Id)
             {

@@ -70,6 +70,16 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddEndpointsApiExplorer();
 var app = builder.Build();
 
+// Cookie → Authorizationヘッダへ変換（JWT認証に必要）
+app.Use(async (context, next) =>
+{
+    if (context.Request.Cookies.TryGetValue("AuthToken", out var token))
+    {
+        context.Request.Headers["Authorization"] = "Bearer " + token;
+    }
+    await next();
+});
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
