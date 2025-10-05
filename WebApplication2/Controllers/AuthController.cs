@@ -30,7 +30,7 @@ namespace WebApplication2.Controllers
                 {
                     HttpOnly = true, // JavaScriptからアクセス不可
                     Secure = true,   // HTTPS通信時のみ送信
-                    SameSite = SameSiteMode.Strict, // CSRF対策（同一サイトのみ送信）
+                    SameSite = SameSiteMode.None,
                     Expires = DateTimeOffset.UtcNow.AddHours(1)
                 });
                 //return Ok(new { token });
