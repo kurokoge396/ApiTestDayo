@@ -10,6 +10,7 @@ namespace WebApplication2.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
+        private const string Key = "AuthToken";
         private readonly IConfiguration _config;
 
         public AuthController(IConfiguration config)
@@ -25,7 +26,7 @@ namespace WebApplication2.Controllers
             {
                 var token = GenerateJwtToken(request.Username);
                 // HttpOnly Cookie に保存
-                Response.Cookies.Append("AuthToken", token, new CookieOptions
+                Response.Cookies.Append(Key, token, new CookieOptions
                 {
                     HttpOnly = true, // JavaScriptからアクセス不可
                     Secure = true,   // HTTPS通信時のみ送信
@@ -38,6 +39,22 @@ namespace WebApplication2.Controllers
                 return Ok(new { message = "Login successful" });
             }
             return Unauthorized();
+        }
+
+        [HttpPost("logout")]
+        public IActionResult Logout()
+        {
+            // Cookieを削除（有効期限を過去に設定）
+            Response.Cookies.Append(Key, "",
+                new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Strict,
+                    Expires = DateTime.UtcNow.AddDays(-1)
+                });
+
+            return Ok(new { message = "ログアウトしました" });
         }
 
         private string GenerateJwtToken(string username)
